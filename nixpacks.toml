@@ -1,3 +1,7 @@
+[phases.setup]
+nixPkgs = ["...", "curl"]
+aptPkgs = ["...", "libcurl4"]
+
 [build]
 command = "npm run build"
 
