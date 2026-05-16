@@ -2,7 +2,7 @@
 node = "20"
 
 [phases.setup]
-aptPkgs = ["...", "libcurl4", "openssl", "libssl-dev"]
+aptPkgs = ["libcurl4", "openssl", "libssl-dev"]
 
 [build]
 command = "npm run build"

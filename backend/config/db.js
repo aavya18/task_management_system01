@@ -1,17 +1,31 @@
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI;
-    
-    if (!mongoUri) {
-      throw new Error("No MONGODB_URI provided in environment variables");
+    let mongoUri = process.env.MONGODB_URI;
+
+    // Try to connect to the provided URI first
+    if (mongoUri && (mongoUri.startsWith('mongodb://') || mongoUri.startsWith('mongodb+srv://'))) {
+      try {
+        await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 3000 });
+        console.log('MongoDB Atlas connected successfully');
+        return;
+      } catch (err) {
+        console.log('Could not connect to external MongoDB. Falling back to in-memory database...');
+      }
     }
 
-    const conn = await mongoose.connect(mongoUri);
-    console.log('MongoDB Atlas connected successfully');
+    // Fallback: in-memory MongoDB
+    process.env.MONGOMS_VERSION = '7.0.3';
+    const mongoServer = await MongoMemoryServer.create({
+      binary: { version: '7.0.3' }
+    });
+    mongoUri = mongoServer.getUri();
+    await mongoose.connect(mongoUri);
+    console.log('In-Memory MongoDB connected successfully');
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`DB Connection Error: ${error.message}`);
     process.exit(1);
   }
 };

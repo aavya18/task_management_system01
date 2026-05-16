@@ -7,7 +7,6 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetails from './pages/ProjectDetails';
 import Tasks from './pages/Tasks';
-import LandingPage from './pages/LandingPage';
 import Layout from './components/Layout';
 
 const ProtectedRoute = ({ children }) => {
@@ -16,15 +15,20 @@ const ProtectedRoute = ({ children }) => {
   return user ? <Layout>{children}</Layout> : <Navigate to="/login" />;
 };
 
+const RootRedirect = () => {
+  const { user, loading } = useContext(AuthContext);
+  if (loading) return <div>Loading...</div>;
+  return user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />;
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
-          <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
           <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetails /></ProtectedRoute>} />
