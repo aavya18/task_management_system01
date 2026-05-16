@@ -16,9 +16,10 @@ const connectDB = async () => {
     }
 
     // Fallback to in-memory server
+    process.env.MONGOMS_VERSION = '7.0.3';
     const mongoServer = await MongoMemoryServer.create({
       binary: {
-        version: '6.0.10'
+        version: '7.0.3'
       }
     });
     mongoUri = mongoServer.getUri();
