@@ -1,6 +1,8 @@
+[providers]
+node = "20"
+
 [phases.setup]
-nixPkgs = ["...", "curl"]
-aptPkgs = ["...", "libcurl4"]
+aptPkgs = ["...", "libcurl4", "openssl", "libssl-dev"]
 
 [build]
 command = "npm run build"
